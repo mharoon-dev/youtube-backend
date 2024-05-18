@@ -4,8 +4,10 @@ import userRouter from "./routes/users.js";
 import commentRouter from "./routes/Comments.js";
 import videoRouter from "./routes/videos.js";
 import authRouter from "./routes/auth.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
+app.use(cookieParser());
 
 app.use(express.json());
 
