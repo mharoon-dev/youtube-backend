@@ -11,10 +11,10 @@ app.use(cookieParser());
 
 app.use(express.json());
 
-app.use("/api/users", authRouter);
+app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/comments", commentRouter);
-app.use("/api/users", videoRouter);
+app.use("/api/videos", videoRouter);
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;

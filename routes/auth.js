@@ -4,12 +4,12 @@ import { googleAuth, signin, signup } from "../controllers/auth.js";
 const authRouter = express.Router();
 
 // signup
-// http://localhost:7000/api/users/signup
+// http://localhost:7000/api/auth/signup
 // post
 authRouter.post("/signup",signup )
 
 // signin
-// http://localhost:7000/api/users/signin
+// http://localhost:7000/api/auth/signin
 // post
 authRouter.post("/signin", signin)
 
