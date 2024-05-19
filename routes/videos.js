@@ -8,6 +8,8 @@ import {
   trend,
   random,
   sub,
+  getByTag,
+  search,
 
 } from "../controllers/video.js";
 import { verifyToken } from "../verifyToken.js";
@@ -53,5 +55,15 @@ videoRouter.get("/random", random);
 // http://localhost:7000/api/videos/sub
 // get
 videoRouter.get("/sub", verifyToken, sub);
+
+// tags
+// http://localhost:7000/api/videos/tags
+// get
+videoRouter.get("/tags", getByTag);
+
+// search
+// http://localhost:7000/api/videos/search
+// get
+videoRouter.get("/search", search);
 
 export default videoRouter;

@@ -115,17 +115,45 @@ export const trend = async (req, res) => {
 export const sub = async (req, res) => {
   try {
     const user = await User.findById(req.user.result._id);
-    
+
     const subscribedChannels = user.subscribedUsers;
 
     const list = await Promise.all(
-      subscribedChannels.map(async (channelId) => {              // jis ko mene subscribe kia hai us ke channel ki id
-        return await Video.find({ userId: channelId });  
+      subscribedChannels.map(async (channelId) => {
+        // jis ko mene subscribe kia hai us ke channel ki id
+        return await Video.find({ userId: channelId });
       })
     );
 
     res.status(200);
     res.json(list.flat().sort((a, b) => b.createdAt - a.createdAt));
+  } catch (error) {
+    next(error);
+  }
+};
+
+// tags
+export const getByTag = async (req, res) => {
+  const tags = req.query.tags.split(",");
+  // console.log(tags);
+  try {
+    const videos = await Video.find({ tags: { $in: tags } }).limit(20);
+    res.status(200);
+    res.json(videos);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// search
+export const search = async (req, res, next) => {
+  const query = req.query.q;
+  try {
+    const videos = await Video.find({
+      title: { $regex: query, $options: "i" },
+    });
+    res.status(200);
+    res.json(videos);
   } catch (error) {
     next(error);
   }
