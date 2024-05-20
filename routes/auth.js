@@ -1,5 +1,6 @@
 import express from "express";
-import { googleAuth, signin, signup } from "../controllers/auth.js";
+import { googleAuth, isUserLoggedIn, signin, signup } from "../controllers/auth.js";
+import { verifyToken } from "../verifyToken.js";
 
 const authRouter = express.Router();
 
@@ -12,6 +13,11 @@ authRouter.post("/signup",signup )
 // http://localhost:7000/api/auth/signin
 // post
 authRouter.post("/signin", signin)
+
+// isUserLoggedIn
+// http://localhost:7000/api/auth/isuserloggedin
+// get
+authRouter.get("/isuserloggedin",verifyToken, isUserLoggedIn)
 
 // signin with google
 authRouter.post("/signinwithgoogle", googleAuth)
