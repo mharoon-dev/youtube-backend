@@ -6,7 +6,7 @@ dotenv.config();
 
 export const verifyToken = async (req, res, next) => {
   const token = await req.cookies.access_token;
-  // console.log(req.cookies)
+  console.log(req.cookies)
   // console.log(token + " ====>> token");
 
   if (!token) return next(createError(401, "you are not authenticated"));
