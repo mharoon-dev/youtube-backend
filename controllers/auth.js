@@ -93,12 +93,13 @@ export const signin = async (req, res) => {
       // return res.send("login controller")
 
       let user = await User.findOne({ name });
-      console.log(user);
+      console.log(user._id);
+      // return
       if (user) {
         const isValid = compareSync(password, user.password);
         if (user.name === name && isValid) {
           user.password = undefined;
-          const token = GenerateToken({ data: user, expiresIn: "24h" });
+          const token = GenerateToken({ data: user._id, expiresIn: "24h" });
           res.cookie("access_token", token, { httpOnly: true });
           res.status(200).json({
             status: true,
@@ -145,7 +146,6 @@ export const isUserLoggedIn = async (req, res) => {
     const userData = req.user;
     if (userData) {
       console.log(userData, "====>> userData");
-
       return res.status(200).json({
         status: true,
         message: "User is logged in",

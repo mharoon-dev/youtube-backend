@@ -1,18 +1,90 @@
 import { createError } from "../error.js";
 import Video from "../models/Video.js";
-import User from "../models/User.js";
+import multer from "multer";
+import fs from "fs";
+import { v2 as cloudinary } from "cloudinary";
+import dotenv from "dotenv";
+const upload = multer({ dest: "./public/data/uploads/" });
+
+// Configuration
+cloudinary.config({
+  cloud_name: process.env.cloud_name,
+  api_key: process.env.api_key,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
+
+dotenv.config();
 
 // add a video
 export const addVideo = async (req, res, next) => {
-  const newVideo = new Video({ userId: req.user.result._id, ...req.body });
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "video", maxCount: 1 },
+  ])(req, res, async function (err) {
+    if (err) {
+      // Handle any errors related to file upload
+      return next(err);
+    }
 
-  try {
-    const savedVideo = await newVideo.save();
-    res.status(200);
-    res.json(savedVideo);
-  } catch (error) {
-    next(error);
-  }
+    const { title, desc, tags } = req.body;
+
+    console.log(req.files); // Check the uploaded files in console
+
+    // Assuming both image and video files are uploaded
+    const imageFile = req.files["image"][0];
+    const videoFile = req.files["video"][0];
+
+    // Upload image to Cloudinary
+    cloudinary.uploader.upload(
+      imageFile.path,
+      { public_id: imageFile.filename },
+      async function (error, imageResult) {
+        // Check for Cloudinary upload error
+        if (error) {
+          return next(error);
+        }
+
+        console.log(imageResult, "===>>> Image result");
+
+        // Upload video to Cloudinary
+        cloudinary.uploader.upload(
+          videoFile.path,
+          { resource_type: "video" },
+          async function (videoError, videoResult) {
+            // Check for Cloudinary upload error
+            if (videoError) {
+              return next(videoError);
+            }
+
+            console.log(videoResult, "===>>> Video result");
+
+            // Assuming both image and video are uploaded successfully
+            // Now you can proceed to save them in the database
+
+            // Extracting desc and title from request body
+            // const { desc, title } = req.body;
+            console.log(req.body);
+
+            const newVideo = new Video({
+              userId: req.user,
+              imgUrl: imageResult.secure_url,
+              videoUrl: videoResult.secure_url,
+              desc: desc, // Adding desc to newVideo object
+              title: title, // Adding title to newVideo object
+              tags: tags,
+            });
+
+            try {
+              const savedVideo = await newVideo.save();
+              res.status(200).json(savedVideo);
+            } catch (error) {
+              next(error);
+            }
+          }
+        );
+      }
+    );
+  });
 };
 
 // add a video
@@ -112,9 +184,10 @@ export const trend = async (req, res) => {
 };
 
 // sub
-export const sub = async (req, res) => {
+export const sub = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.result._id);
+    const user = req.user;
+    // console.log(user);
 
     const subscribedChannels = user.subscribedUsers;
 
