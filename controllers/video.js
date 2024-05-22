@@ -15,6 +15,7 @@ cloudinary.config({
 
 dotenv.config();
 
+
 // add a video
 export const addVideo = async (req, res, next) => {
   upload.fields([
@@ -66,7 +67,7 @@ export const addVideo = async (req, res, next) => {
             console.log(req.body);
 
             const newVideo = new Video({
-              userId: req.user,
+              userId: req.user._id,
               imgUrl: imageResult.secure_url,
               videoUrl: videoResult.secure_url,
               desc: desc, // Adding desc to newVideo object
@@ -86,7 +87,6 @@ export const addVideo = async (req, res, next) => {
     );
   });
 };
-
 // add a video
 export const updateVideo = async (req, res, next) => {
   try {

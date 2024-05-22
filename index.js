@@ -6,10 +6,11 @@ import videoRouter from "./routes/videos.js";
 import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+// import {upload} from "./controllers/video.js";
 
 const app = express();
+// app.use(upload.any());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.use(
   cors({
