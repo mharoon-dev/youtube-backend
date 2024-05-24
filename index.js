@@ -1,6 +1,13 @@
 import express from "express";
 import { connectDB } from "./config/default.js";
 import userRouter from "./routes/users.js";
+import { readdirSync } from 'fs';
+import { join } from 'path';
+
+const currentDir = process.cwd();
+console.log('Current Directory:', currentDir);
+console.log('Files in Current Directory:', readdirSync(currentDir));
+console.log('Files in Routes Directory:', readdirSync(join(currentDir, 'routes')));
 import commentsRouter from "./routes/Comments.js";
 import videoRouter from "./routes/videos.js";
 import authRouter from "./routes/auth.js";
