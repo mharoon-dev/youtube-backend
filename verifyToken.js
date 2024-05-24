@@ -16,7 +16,41 @@ export const verifyToken = async (req, res, next) => {
   jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, user) => {
     if (err) return next(createError(403, "Token is not valid"));
     // console.log(user.result);
-
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
     const fetchUser = await User.findById(user.result);
     req.user = fetchUser;
     console.log(req.user + "====>> user (verify-Token_File)");
