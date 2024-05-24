@@ -6,7 +6,7 @@ import videoRouter from "./routes/videos.js";
 import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-// import {upload} from "./controllers/video.js";
+// import { upload } from "./controllers/video.js";
 
 const app = express();
 // app.use(upload.any());
@@ -19,8 +19,6 @@ app.use(
   })
 );
 
-
-
 app.use(cookieParser());
 app.use(express.json());
 
@@ -29,9 +27,7 @@ app.use("/api/users", userRouter);
 app.use("/api/comments", commentsRouter);
 app.use("/api/videos", videoRouter);
 
-app.post("/api/videos/uploads"
-);
-
+app.post("/api/videos/uploads");
 
 app.use((err, req, res, next) => {
   const status = err.status || 500;
