@@ -4,7 +4,7 @@ import Video from "../models/Video.js";
 // update a user
 export const update = async (req, res, next) => {
   // console.log(req.user.result._id)
-  if (req.params.id === req.user.result._id) {
+  if (req.params.id === req.user._id) {
     try {
       const updatedUser = await User.findByIdAndUpdate(
         req.params.id,
@@ -24,7 +24,7 @@ export const update = async (req, res, next) => {
 
 // delete a user
 export const deleteUser = async (req, res, next) => {
-  if (req.params.id === req.user.result._id) {
+  if (req.params.id === req.user._id) {
     try {
       await User.findByIdAndDelete(req.params.id);
       res.status(200).json("User has been deleted...");
@@ -84,7 +84,7 @@ export const unSubscribe = async (req, res) => {
 
 // likeVideo
 export const likeVideo = async (req, res, next) => {
-  const id = req.user.result._id;
+  const id = req.user._id;
   const videoId = req.params.videoId;
   try {
     await Video.findByIdAndUpdate(videoId, {
@@ -101,7 +101,7 @@ export const likeVideo = async (req, res, next) => {
 // disLikeVideo
 export const disLikeVideo = async (req, res, next) => {
   try {
-    const id = req.user.result._id;
+    const id = req.user._id;
     const videoId = req.params.videoId;
     await Video.findByIdAndUpdate(videoId, {
       $addToSet: { dislikes: id },

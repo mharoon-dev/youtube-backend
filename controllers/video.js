@@ -15,7 +15,6 @@ cloudinary.config({
 
 dotenv.config();
 
-
 // add a video
 export const addVideo = async (req, res, next) => {
   upload.fields([
@@ -27,7 +26,8 @@ export const addVideo = async (req, res, next) => {
       return next(err);
     }
 
-    const { title, desc, tags } = req.body;
+    const { title, desc } = req.body;
+    const tags = req.body.tags.split(",");
 
     console.log(req.files); // Check the uploaded files in console
 
@@ -59,19 +59,14 @@ export const addVideo = async (req, res, next) => {
 
             console.log(videoResult, "===>>> Video result");
 
-            // Assuming both image and video are uploaded successfully
-            // Now you can proceed to save them in the database
-
-            // Extracting desc and title from request body
-            // const { desc, title } = req.body;
             console.log(req.body);
 
             const newVideo = new Video({
               userId: req.user._id,
               imgUrl: imageResult.secure_url,
               videoUrl: videoResult.secure_url,
-              desc: desc, // Adding desc to newVideo object
-              title: title, // Adding title to newVideo object
+              desc: desc,
+              title: title,
               tags: tags,
             });
 
@@ -113,7 +108,7 @@ export const updateVideo = async (req, res, next) => {
 };
 
 // add a video
-export const deleteVideo = async (req, res) => {
+export const deleteVideo = async (req, res, next) => {
   try {
     const video = await Video.findById(req.params.id);
 
@@ -132,7 +127,7 @@ export const deleteVideo = async (req, res) => {
 };
 
 // add a video
-export const getVideo = async (req, res) => {
+export const getVideo = async (req, res, next) => {
   try {
     const video = await Video.findById(req.params.id);
 
@@ -146,7 +141,7 @@ export const getVideo = async (req, res) => {
 };
 
 // add view
-export const addView = async (req, res) => {
+export const addView = async (req, res, next) => {
   try {
     await Video.findByIdandUpdate(req.params.id, {
       $inc: { views: 1 },
@@ -160,7 +155,7 @@ export const addView = async (req, res) => {
 };
 
 // random
-export const random = async (req, res) => {
+export const random = async (req, res, next) => {
   try {
     const videos = await Video.aggregate([{ $sample: { size: 40 } }]);
 
@@ -172,7 +167,7 @@ export const random = async (req, res) => {
 };
 
 // trend
-export const trend = async (req, res) => {
+export const trend = async (req, res, next) => {
   try {
     const videos = await Video.find().sort({ views: -1 });
 
@@ -206,11 +201,13 @@ export const sub = async (req, res, next) => {
 };
 
 // tags
-export const getByTag = async (req, res) => {
+export const getByTag = async (req, res, next) => {
   const tags = req.query.tags.split(",");
-  // console.log(tags);
+  console.log(tags);
+
   try {
     const videos = await Video.find({ tags: { $in: tags } }).limit(20);
+    console.log(videos);
     res.status(200);
     res.json(videos);
   } catch (error) {
