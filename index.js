@@ -1,6 +1,7 @@
 import express from "express";
 import { connectDB } from "./config/default.js";
 import userRouter from "./routes/users.js";
+import { readdirSync } from 'fs';
 import commentsRouter from "./routes/Comments.js";
 import videoRouter from "./routes/videos.js";
 import authRouter from "./routes/auth.js";
