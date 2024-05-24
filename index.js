@@ -1,7 +1,7 @@
 import express from "express";
 import { connectDB } from "./config/default.js";
 import userRouter from "./routes/users.js";
-import commentRouter from "./routes/Comments.js";
+import commentsRouter from "./routes/Comments.js";
 import videoRouter from "./routes/videos.js";
 import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
@@ -26,7 +26,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
-app.use("/api/comments", commentRouter);
+app.use("/api/comments", commentsRouter);
 app.use("/api/videos", videoRouter);
 
 app.post("/api/videos/uploads"
