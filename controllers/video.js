@@ -4,7 +4,7 @@ import multer from "multer";
 import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
-const upload = multer({ dest: "./path-to-upload-config" });
+const upload = multer({ dest: "./public/data/uploads" });
 
 // Configuration
 cloudinary.config({
