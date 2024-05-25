@@ -1,21 +1,23 @@
 import { createError } from "../error.js";
 import Video from "../models/Video.js";
 import multer from "multer";
-import fs from "fs";
 import { v2 as cloudinary } from "cloudinary";
+import streamifier from "streamifier";
 import dotenv from "dotenv";
-const upload = multer({ dest: "./public/data/uploads" });
-
-// Configuration
-cloudinary.config({
-  cloud_name: process.env.cloud_name,
-  api_key: process.env.api_key,
-  api_secret: process.env.CLOUDINARY_SECRET,
-});
 
 dotenv.config();
 
-// add a video
+// Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
+
+// Memory storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
 export const addVideo = async (req, res, next) => {
   upload.fields([
     { name: "image", maxCount: 1 },
@@ -29,57 +31,41 @@ export const addVideo = async (req, res, next) => {
     const { title, desc } = req.body;
     const tags = req.body.tags.split(",");
 
-    console.log(req.files); // Check the uploaded files in console
-
-    // Assuming both image and video files are uploaded
-    const imageFile = req.files["image"][0];
-    const videoFile = req.files["video"][0];
-
     // Upload image to Cloudinary
-    cloudinary.uploader.upload(
-      imageFile.path,
-      { public_id: imageFile.filename },
-      async function (error, imageResult) {
-        // Check for Cloudinary upload error
-        if (error) {
-          return next(error);
-        }
-
-        console.log(imageResult, "===>>> Image result");
-
-        // Upload video to Cloudinary
-        cloudinary.uploader.upload(
-          videoFile.path,
-          { resource_type: "video" },
-          async function (videoError, videoResult) {
-            // Check for Cloudinary upload error
-            if (videoError) {
-              return next(videoError);
-            }
-
-            console.log(videoResult, "===>>> Video result");
-
-            console.log(req.body);
-
-            const newVideo = new Video({
-              userId: req.user._id,
-              imgUrl: imageResult.secure_url,
-              videoUrl: videoResult.secure_url,
-              desc: desc,
-              title: title,
-              tags: tags,
-            });
-
-            try {
-              const savedVideo = await newVideo.save();
-              res.status(200).json(savedVideo);
-            } catch (error) {
-              next(error);
-            }
+    const uploadToCloudinary = (fileBuffer, options) => {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(options, (error, result) => {
+          if (result) {
+            resolve(result);
+          } else {
+            reject(error);
           }
-        );
-      }
-    );
+        });
+        streamifier.createReadStream(fileBuffer).pipe(uploadStream);
+      });
+    };
+
+    try {
+      const imageFile = req.files["image"][0];
+      const videoFile = req.files["video"][0];
+
+      const imageResult = await uploadToCloudinary(imageFile.buffer, { public_id: imageFile.originalname });
+      const videoResult = await uploadToCloudinary(videoFile.buffer, { resource_type: "video" });
+
+      const newVideo = new Video({
+        userId: req.user._id,
+        imgUrl: imageResult.secure_url,
+        videoUrl: videoResult.secure_url,
+        desc: desc,
+        title: title,
+        tags: tags,
+      });
+
+      const savedVideo = await newVideo.save();
+      res.status(200).json(savedVideo);
+    } catch (error) {
+      next(error);
+    }
   });
 };
 // add a video
