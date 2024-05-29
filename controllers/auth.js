@@ -142,28 +142,23 @@ export const signin = async (req, res) => {
 
 // user isUserloggedin
 export const isUserLoggedIn = async (req, res) => {
-  console.log(req.headers.authorization, "====>> token");
-  return res.status(200).json({
-    status: true,
-    message: "User is logged in",
-  });
-  // try {
-  //   const userData = req.user;
-  //   if (userData) {
-  //     console.log(userData, "====>> userData");
-  //     return res.status(200).json({
-  //       status: true,
-  //       message: "User is logged in",
-  //       data: userData,
-  //     });
-  //   } else {
-  //     console.log("User is not logged in");
-  //   }
-  // } catch (error) {
-  //   return res
-  //     .status(500) //INTERNALERROR
-  //     .send(error.message);
-  // }
+  try {
+    const userData = req.user;
+    if (userData) {
+      console.log(userData, "====>> userData");
+      return res.status(200).json({
+        status: true,
+        message: "User is logged in",
+        data: userData,
+      });
+    } else {
+      console.log("User is not logged in");
+    }
+  } catch (error) {
+    return res
+      .status(500) //INTERNALERROR
+      .send(error.message);
+  }
 };
 
 export const googleAuth = (req, res) => {

@@ -11,17 +11,17 @@ import cors from "cors";
 const app = express();
 // app.use(upload.any());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://https://youtube-backend-beryl.vercel.app/api",
+    origin: "http://localhost:5173",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"], 
   })
 );
 
-app.use(cookieParser());
-app.use(express.json());
 
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);

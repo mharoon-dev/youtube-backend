@@ -7,9 +7,6 @@ dotenv.config();
 const { sign, verify } = pkg;
 
 export const GenerateToken = ({ data, expiresIn }) => {
-  //make the key more harder
-  //expires in should also be from .env file
-  //good approach
   return sign({ result: data }, process.env.JWT_SECRET_KEY, {
     expiresIn: expiresIn,
   });

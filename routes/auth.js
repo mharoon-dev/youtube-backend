@@ -23,7 +23,7 @@ authRouter.post("/signin", signin);
 // isUserLoggedIn
 // http://localhost:7000/api/auth/isuserloggedin
 // get
-authRouter.get("/isuserloggedin", isUserLoggedIn);
+authRouter.get("/isuserloggedin", checkToken, isUserLoggedIn);
 
 // signin with google
 authRouter.post("/signinwithgoogle", googleAuth);
