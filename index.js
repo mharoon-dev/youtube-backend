@@ -14,13 +14,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: ["http://localhost:5173" , "https://youtube-backend-one.vercel.app/", "https://youtube-nine-ruby.vercel.app/" ],
-    credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"], 
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5173" , "https://youtube-backend-one.vercel.app/", "https://youtube-nine-ruby.vercel.app/" ],
+//     credentials: true,
+//     allowedHeaders: ["Content-Type", "Authorization"], 
+//   })
+// );
+
+app.use(cors());
 
 
 app.use("/api/auth", authRouter);
