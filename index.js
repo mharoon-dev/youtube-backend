@@ -16,7 +16,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173" , "https://youtube-nine-ruby.vercel.app/" ],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"], 
   })

@@ -13,23 +13,24 @@ import {
 
 } from "../controllers/video.js";
 import { verifyToken } from "../verifyToken.js";
+import { checkToken } from "../helpers/token.js";
 
 const videoRouter = express.Router();
 
 // add a video
 // http://localhost:7000/api/videos
 // post
-videoRouter.post("/upload", verifyToken, addVideo);
+videoRouter.post("/upload", checkToken, addVideo);
 
 // update
 // http://localhost:7000/api/videos/:id
 // put
-videoRouter.put("/:id", verifyToken, updateVideo);
+videoRouter.put("/:id", checkToken, updateVideo);
 
 // delete
 // http://localhost:7000/api/videos/:id
 // delete
-videoRouter.delete("/:id", verifyToken, deleteVideo);
+videoRouter.delete("/:id", checkToken, deleteVideo);
 
 // get a video
 // http://localhost:7000/api/videos/find/:id
@@ -54,7 +55,7 @@ videoRouter.get("/random", random);
 // sub
 // http://localhost:7000/api/videos/sub
 // get
-videoRouter.get("/sub", verifyToken, sub);
+videoRouter.get("/sub", checkToken, sub);
 
 // tags
 // http://localhost:7000/api/videos/tags

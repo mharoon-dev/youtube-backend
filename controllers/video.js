@@ -19,6 +19,8 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 export const addVideo = async (req, res, next) => {
+  console.log(req.files["image"][0] )
+  console.log(req.files["video"][0])
   upload.fields([
     { name: "image", maxCount: 1 },
     { name: "video", maxCount: 1 },
@@ -34,13 +36,16 @@ export const addVideo = async (req, res, next) => {
     // Upload image to Cloudinary
     const uploadToCloudinary = (fileBuffer, options) => {
       return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(options, (error, result) => {
-          if (result) {
-            resolve(result);
-          } else {
-            reject(error);
+        const uploadStream = cloudinary.uploader.upload_stream(
+          options,
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
           }
-        });
+        );
         streamifier.createReadStream(fileBuffer).pipe(uploadStream);
       });
     };
@@ -49,8 +54,12 @@ export const addVideo = async (req, res, next) => {
       const imageFile = req.files["image"][0];
       const videoFile = req.files["video"][0];
 
-      const imageResult = await uploadToCloudinary(imageFile.buffer, { public_id: imageFile.originalname });
-      const videoResult = await uploadToCloudinary(videoFile.buffer, { resource_type: "video" });
+      const imageResult = await uploadToCloudinary(imageFile.buffer, {
+        public_id: imageFile.originalname,
+      });
+      const videoResult = await uploadToCloudinary(videoFile.buffer, {
+        resource_type: "video",
+      });
 
       const newVideo = new Video({
         userId: req.user._id,
